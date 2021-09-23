@@ -2,6 +2,7 @@ package com.afrosoft.yourweighton
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.CheckBox
@@ -32,22 +33,47 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         var weight = enterWeightId.text
 
         when(v.id){
-            R.id.marscheckBox -> if(isChecked){
-                calculateWeight(weight.toString().toDouble(),v)}
-            R.id.venuscheckBox -> if(isChecked){
-                calculateWeight(weight.toString().toDouble(),v)}
-            R.id.jupitercheckBox -> if(isChecked){
-                calculateWeight(weight.toString().toDouble(),v)}
+            R.id.marscheckBox -> if(isChecked && !TextUtils.isEmpty(enterWeightId.text.toString()))
+                                    {
+                                        calculateWeight(weight.toString().toDouble(),v)
+                                        venuscheckBox.isChecked = false
+                                        jupitercheckBox.isChecked = false
+                                    }
+            R.id.venuscheckBox -> if(isChecked && !TextUtils.isEmpty(enterWeightId.text.toString()))
+                                    {
+                                        calculateWeight(weight.toString().toDouble(),v)
+                                        marscheckBox.isChecked =false
+                                        jupitercheckBox.isChecked = false
+                                    }
+            R.id.jupitercheckBox -> if(isChecked && !TextUtils.isEmpty(enterWeightId.text.toString()))
+                                    {
+                                        calculateWeight(weight.toString().toDouble(),v)
+                                        marscheckBox.isChecked = false
+                                        venuscheckBox.isChecked = false
+                                    }
         }
     }
     fun calculateWeight(userWeight: Double, checkBox: CheckBox){
         var result: Double?
         when(checkBox.id){
-            R.id.marscheckBox -> result = userWeight * marsGravity
-            R.id.venuscheckBox -> result = userWeight * venusGravity
-            R.id.jupitercheckBox -> result = userWeight * jupiterGravity
-            else -> result = userWeight * marsGravity
+            R.id.marscheckBox -> {
+                result = userWeight * marsGravity
+                resultTextView.text = "Weight is ${result.format(2)} on Mars"
+            }
+            R.id.venuscheckBox -> {
+                result = userWeight * venusGravity
+                resultTextView.text = "Weight is ${result.format(2)} on Venus"
+            }
+            R.id.jupitercheckBox -> {
+                result = userWeight * jupiterGravity
+                resultTextView.text = "Weight is ${result.format(2)} on Jupiter"
+            }
+            else -> {
+                result = userWeight * marsGravity
+                resultTextView.text = "Weight is ${result.format(2)} on Mars"
+            }
         }
-        resultTextView.text = "Weight is $result "
+
     }
+    fun Double.format(digits: Int) = java.lang.String.format("%.${digits}f",this)
 }
